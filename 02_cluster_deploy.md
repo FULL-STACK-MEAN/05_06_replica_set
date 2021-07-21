@@ -145,3 +145,35 @@ Para establecer operaciones de lectura cuando el servidor esté en estado secund
 
 db.setSecondaryOk() // Se establece a nivel de base de datos
 
+## Miembros delayed (recuperación de desastres)
+
+Miembros ocultos tienen prioridad 0 (para que no puedan llegar a ser primarios) y ponerles hidden igual a true
+para que no puedan recibir lecturas.
+
+1.- En el primario, recuperamos la configuración actual del cluster
+
+let configuration = rs.conf()
+
+2.- Modificamos los siguientes valores del miembro a convertir en delayed
+
+configuration.members[3].priority = 0;
+configuration.members[3].hidden = true;
+configuration.members[3].slaveDelay = 120; // Entero con el tiempo de delay en segundos
+
+3.- Reconfiguramos
+
+rs.reconfig(configuration)
+
+## Miembros con votos 0
+
+Si se necesitan cluster de más de 7 miembros, los miembros adicionales deberán tener votes = 0
+en su configuración.
+
+## Retirada de miembros
+
+1.- Apagar el servidor del miembro a retirar
+
+2.- En el primario
+
+rs.remove("localhost:27104")
+rs.remove("localhost:27105")

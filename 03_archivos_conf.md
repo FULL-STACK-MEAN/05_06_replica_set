@@ -11,4 +11,10 @@ las siguientes características
 - se escriben en yaml
 - se ejecutan con la opción --config
 
-mongod --config <archivo>.conf (se levanta sin terminal)
+mongod --config <archivo>.conf (en Unix se levanta sin terminal)
+
+## apagar un servidor desde la shell de mongo
+
+use admin
+
+db.shutdownServer()
